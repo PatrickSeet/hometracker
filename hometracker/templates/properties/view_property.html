@@ -1,0 +1,87 @@
+{% load staticfiles %}
+{% load leaflet_tags %}
+<!DOCTYPE html>
+<html>
+<header>
+
+</header>
+ <head>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link re="stylesheet" type="text/css" href={% static 'css/property.css' %}>
+     <img src={% static 'img/hkbanner.jpg' %}>
+    {% leaflet_js %}
+    {% leaflet_css %}
+<body>
+<div class="bs-example">
+    <nav role="navigation" class="navbar navbar-default">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <!-- Collection of nav links and other content for toggling -->
+                <a href="#" class="navbar-brand">Welcome!</a>
+
+        <div id="navbarCollapse" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                 <li class="active"><a href="{% url 'profile' %}">Profile</a></li>
+                <li><a href="{% url 'properties' %}">Properties</a></li>
+                <li><a href="{% url 'faq' %}">FAQ</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url 'logout' %}">Logout</a></li>
+                    {% else %}
+                <li><a href="{% url 'login' %}">Login</a></li>
+                <li><a href="{% url 'register' %}">Register</a></li>
+                    {% endif %}
+            </ul>
+    </nav>
+</div>
+<div id="mymap" style="width: 450px; height: 450px; float: right;margin-right:250px;margin-top:150px">
+
+        <script type="text/javascript">
+        function map_init_basic (map) {
+            var xcor = {{ location_info.lat }};
+            var ycor = {{ location_info.lng }};
+            map.setView([xcor, ycor], 15);
+            L.marker([xcor, ycor]).addTo(map);
+        }
+    </script>
+ </div>
+<div class="pcontent"  style="margin-left: 100px">
+    <h1>{{ property.address }}</h1>
+    <h3>Info</h3>
+    <p>Number of bedrooms: {{ property.numofbdrms }}</p>
+    <p>Number of bathrooms: {{ property.numofbthrms }}</p>
+    <p>Property type: {{ property.propertytype }}</p>
+    <p>Asking price: ${{ property.askingprice }}</p>
+    <p>You've offered: ${{ property.offeredpricce }}</p>
+    <p>Sold for: ${{ property.soldprice }}</p>
+    <p>Percentage over asking: {{ percentage_over }}%</p>
+    <p>You were beat by: ${{ beat_by }}</p>
+    <a href="{% url "edit_property" property.id %}">Edit Property</a>
+    <a href="{% url "delete_property" property.id %}">Delete Property</a>
+    <br>
+    <h3>Notes</h3>
+    <p>Roof: {{ notes.roof }}</p>
+    <p>Kitchen: {{ notes.kitchen }}</p>
+    <p>Bathorooms: {{ notes.bathrooms }}</p>
+    <p>Frontyard: {{ notes.frontyard }}</p>
+    <p>Backyard: {{ notes.backyard }}</p>
+    <p>Termite estimate: {{ notes.termite }}</p>
+    <p>Foundation estimate: {{ notes.foundation }}</p>
+    <p>Neighbohood notes: {{ notes.neighborhood }}</p>
+    <a href="{% url "edit_propertynotes" property.id %}">Edit Property Notes</a>
+    <a href="{% url "delete_propertynotes" property.id %}">Delete Property Notes</a>
+    {% leaflet_map "mymap" callback="window.map_init_basic" %}
+    <br>
+    <a href="{% url "profile" %}">Back to Profile</a>
+    <a href="{% url "properties" %}">Back to Properties</a>
+</div>
+ </body>
+</html>

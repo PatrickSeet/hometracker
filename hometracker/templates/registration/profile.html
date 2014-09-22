@@ -1,0 +1,12 @@
+{% extends 'base_template.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    <div   style="margin-left: 100px;margin-top: 50px">
+    <h3>Home</h3>
+    <p>Hi {{ user.first_name }} {{ user.last_name }}</p>
+    <p>Your registered email is {{ user.email }}</p>
+    <p>You last logged in: {{ user.last_login }}</p>
+    <p>Member since {{ user.date_joined }}</p>
+    </div>
+{% endblock content %}

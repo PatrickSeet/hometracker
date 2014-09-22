@@ -1,0 +1,15 @@
+{% extends 'base_template.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    <div   style="margin-left: 100px;margin-top: 50px">
+    <h3>{{ user.first_name }}'s list of properties</h3>
+    {% for property in properties %}
+        <li><a href="{% url "view_property" property.id %}">{{ property.address }}</a></li>
+    {% endfor %}
+    <br>
+
+    <a href="{% url "profile" %}">Back to Profile</a>
+    <a href="{% url "new_property" %}">Add New Property</a>
+    </div>
+{% endblock content %}
