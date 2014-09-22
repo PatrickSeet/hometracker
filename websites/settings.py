@@ -101,12 +101,6 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__fi
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(PROJECT_ROOT, "static", *MEDIA_URL.strip("/").split("/"))
 
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'teeskcirtap@gmail.com'
-EMAIL_HOST_PASSWORD = 'MCoupe4WIT900#'
-EMAIL_PORT = 587
-DEFAULT_FROM_EMAIL = 'teeskcirtap@gmail.com'
 
 try:
     from local_settings import *
