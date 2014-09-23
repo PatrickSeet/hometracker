@@ -25,7 +25,7 @@ def register(request):
             msg = EmailMultiAlternatives("Welcome!", text_content, settings.DEFAULT_FROM_EMAIL, [user.email])
             msg.attach_alternative(html_content, "text/html")
             msg.send()
-            return redirect("profile")
+            return redirect("login")
     else:
         form = EmailUserCreationForm()
 
