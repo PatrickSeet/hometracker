@@ -1,25 +1,22 @@
 {% load staticfiles %}
-{% load leaflet_tags %}
 <!DOCTYPE html>
 <html>
     <head>
-    {% leaflet_js %}
-    {% leaflet_css %}
-    <title> {% block title %} {% endblock title %} </title>
+    <script src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js"></script>
     <script src="{% static 'js/jquery-1.11.1.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap-theme.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-    </head>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css"/>
+    <header>
+               <img src={% static 'img/hkbanner.jpg' %}>
+
+
+</header>
+
     <body margintop="0" marginleft="0">
 
-    <!-- start header section -->
-    <header>
-        <div>
-                <img src={% static 'img/hkbanner.jpg' %}>
-        </div>
-    </header>
 <div class="bs-example">
     <nav role="navigation" class="navbar navbar-default">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -41,42 +38,34 @@
                 <li><a href="{% url 'map' %}">Map</a></li>
                 <li><a href="{% url 'faq' %}">FAQ</a></li>
             </ul>
-            <ul class="nav navbar-nav navbar-right">
+    <ul class="nav navbar-nav navbar-right">
+
                     {% if user.is_authenticated %}
-                        <li><a href="{% url 'logout' %}">Logout</a></li>
+                     <li><a href="{% url 'logout' %}">Logout</a></li>
                     {% else %}
-                <li><a href="{% url 'login' %}">Login</a></li>
-                <li><a href="{% url 'register' %}">Register</a></li>
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                     <li><a href="{% url 'register' %}">Register</a></li>
                     {% endif %}
             </ul>
         </div>
     </nav>
 </div>
-
-    <!-- end header section -->
-       <div style="margin-left: 50px; margin-right: 50px; margin-top: 50px;">
-        {% block content %}
-
-<div id="mymap" style="width: 300px; height: 300px">
-
-        <script type="text/javascript">
-        function map_init_basic (map) {
-
-            var j_dict = {{ location_dict }};
-            for (var key in j_dict){
-                if(key.hasOwnProperty((key))){
-                    console.log(key + j_dict[key]);
-                }
-            }
-
+   <div id="map" style="width: 500px; height: 500px;float: right;margin-right: 80px;margin-top: 70px"></div>
+    <script>
+        var map = L.map('map').setView([-93.0606579, 37.5686855], 14);
+        mapLink ='<a href="http://openstreetmap.org">OpenStreetMap</a>';
+        L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: 'Map data &copy; ' + mapLink, maxZoom: 18}).addTo(map);
+        var xycords_dict = {{ jdata }};
+        var count = 0;
+        var ary = [];
+        for (keys in xycords_dict){
+            ary[count] = xycords_dict[parseInt(xycords_dict[keys])];
+            count++;
         }
-    </script>
- </div>
+        for (var i=0;i<ary.length-1;i++){
+            var marker = L.marker([ary[i],ary[i+1]]).addTo(map);
+        }
 
-        {% endblock content %}
-       </div>
-    <!-- start footer section -->
-{% block footer %} {% endblock footer %}
-    <!-- end footer section -->
+    </script>
     </body>
 </html>

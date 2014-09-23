@@ -7,14 +7,8 @@
     <h3>Add new property</h3>
     <form method="post">
     {% csrf_token %}
-    {{ form }}
+    {{ form.as_p }}
     <input type="submit" value="Add New Property">
-</form>
-    <h3>Add new property notes</h3>
-    <form method="post">
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Add New Property Notes">
 </form>
     <a href="{% url "profile" %}">Back to Profile</a>
     <a href="{% url "properties" %}">Back to Properties</a>

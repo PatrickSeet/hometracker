@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% load leaflet_tags %}
-
+    {% leaflet_js %}
+    {% leaflet_css %}
 {% block content %}
-{% leaflet_map "mymap" callback="window.map_init_basic" %}
+{% leaflet_map "my_map" callback="window.map_init_basic" %}
 
 {% endblock content %}

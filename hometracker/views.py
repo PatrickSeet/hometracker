@@ -40,10 +40,6 @@ def faq(request):
 
     return render(request, 'faq.html')
 
-def test(request):
-
-    return render(request, 'test.html')
-
 @login_required
 def profile(request):
 
@@ -71,8 +67,8 @@ def new_property(request):
             # Saving the form will create a new Genre object
             if form.save():
 
-                # After saving, redirect the user back to the index page
-                return redirect("/properties")
+                # After saving, redirect the user to add propertynotes
+                return redirect("new_propertynotes")
 
     # Else if the user is looking at the form page
     else:
@@ -167,9 +163,9 @@ def edit_propertynotes(request, property_id):
     return render(request, "properties/edit_propertynotes.html", data)
 
 @login_required()
-def map(request):
+def base(request):
 
-    data = {}
+    json_data = {}
     properties = Property.objects.all()
     google_maps = GoogleMaps(api_key='AIzaSyDlHBtlOb1-JpUPZ8CHAZqaNha6Uw_l_ow')
 
@@ -177,28 +173,39 @@ def map(request):
         property_info = google_maps.query(location=property.address)
         property_info = property_info.first()
         lat = property_info.lat
+        manual_lat = lat
         lng = property_info.lng
-        data[lat] = lat
-        data[lng] = lng
+        manual_lng = lng
+        json_data[lat] = lat
+        json_data[lng] = lng
 
-    json_data = json.dumps(data)
+    jdata = json.dumps(json_data)
 
-    location_dict = {'json_data': json_data}
+    #location_dict = {'json_data': json_data}
+    data = {"jdata":jdata}
 
-    return render(request, "map.html", location_dict)
-
+    return render(request, "base.html", data)
 @login_required()
-def temap(request):
+def map(request):
 
-    address = "225 Bush Street San Francisco California"
-
+    json_data = {}
+    properties = Property.objects.all()
     google_maps = GoogleMaps(api_key='AIzaSyDlHBtlOb1-JpUPZ8CHAZqaNha6Uw_l_ow')
 
-    location_info = google_maps.query(location=address)
+    for property in properties:
+        property_info = google_maps.query(location=property.address)
+        property_info = property_info.first()
+        lat = property_info.lat
+        manual_lat = lat
+        lng = property_info.lng
+        manual_lng = lng
+        json_data[lat] = lat
+        json_data[lng] = lng
 
-    location_info = location_info.first()
+    jdata = json.dumps(json_data)
 
-    data = {"location_info":location_info}
+    #location_dict = {'json_data': json_data}
+    data = {"jdata":jdata}
 
     return render(request, "map.html", data)
 
