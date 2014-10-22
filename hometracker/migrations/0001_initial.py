@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 import django.utils.timezone
+from django.conf import settings
 import django.core.validators
 
 
@@ -37,5 +38,52 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'users',
             },
             bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Property',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('mlsid', models.IntegerField()),
+                ('address', models.CharField(max_length=100)),
+                ('numofbdrms', models.IntegerField()),
+                ('numofbthrms', models.FloatField()),
+                ('numofmaster', models.IntegerField()),
+                ('sqfootage', models.IntegerField()),
+                ('lotsize', models.IntegerField()),
+                ('askingprice', models.IntegerField()),
+                ('offeredpricce', models.IntegerField()),
+                ('soldprice', models.IntegerField()),
+                ('frontyard', models.BooleanField(default=False)),
+                ('backyard', models.BooleanField(default=False)),
+                ('propertytype', models.CharField(max_length=100)),
+                ('xcoordinate', models.FloatField()),
+                ('ycoordinate', models.FloatField()),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='PropertyNotes',
+            fields=[
+                ('roof', models.CharField(max_length=100)),
+                ('kitchen', models.CharField(max_length=100)),
+                ('bathrooms', models.CharField(max_length=100)),
+                ('frontyard', models.CharField(max_length=100)),
+                ('backyard', models.CharField(max_length=100)),
+                ('termite', models.CharField(max_length=100)),
+                ('foundation', models.CharField(max_length=100)),
+                ('neighborhood', models.CharField(max_length=100)),
+                ('property', models.OneToOneField(primary_key=True, serialize=False, to='hometracker.Property')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='property',
+            name='shopper',
+            field=models.ForeignKey(related_name=b'shopper', to=settings.AUTH_USER_MODEL),
+            preserve_default=True,
         ),
     ]

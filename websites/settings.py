@@ -40,7 +40,6 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = (
     'hometracker',
-    'myportfolio',
     'leaflet',
     'django.contrib.admin',
     'django.contrib.auth',

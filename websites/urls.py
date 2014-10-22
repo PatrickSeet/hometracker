@@ -9,7 +9,6 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
-    ##
     url(r'^property/(?P<property_id>\w+)/edit/$', 'hometracker.views.edit_property', name='edit_property'),
     url(r'^property/(?P<property_id>\w+)/delete/$', 'hometracker.views.delete_property', name='delete_property'),
     url(r'^propertynotes/(?P<property_id>\w+)/edit/$', 'hometracker.views.edit_propertynotes', name='edit_propertynotes'),
@@ -32,11 +31,6 @@ urlpatterns = patterns('',
     'django.contrib.auth.views.password_reset_confirm',
     name='password_reset_confirm'),
     url(r'^reset/done/$', 'django.contrib.auth.views.password_reset_complete', name='password_reset_complete'),
-
-    ##
-    url(r'^home/', 'myportfolio.views.home', name='home'),
-    url(r'^aboutme/', 'myportfolio.views.aboutme', name='aboutme'),
-    url(r'^projects/', 'myportfolio.views.projects', name='projects'),
 )
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

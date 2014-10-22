@@ -30,6 +30,7 @@ class EmailUserCreationForm(UserCreationForm):
 class PropertyForm(ModelForm):
     class Meta:
         model = Property
+        exclude = ('xcoordinate','ycoordinate',)
 
 class PropertyNotesForm(ModelForm):
     class Meta:

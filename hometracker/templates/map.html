@@ -1,9 +1,31 @@
-{% extends 'base.html' %}
-{% load staticfiles %}
-{% load leaflet_tags %}
-    {% leaflet_js %}
-    {% leaflet_css %}
-{% block content %}
-{% leaflet_map "my_map" callback="window.map_init_basic" %}
+{% extends 'base_template2.html' %}
+<head>
+	<link rel='stylesheet' href='http://cdn.leafletjs.com/leaflet-0.6/leaflet.css' />
+	<script src='http://cdn.leafletjs.com/leaflet-0.6/leaflet.js' type='text/javascript'></script>
+	<style type="text/css">
+		html, body {height: 60%;overflow: hidden;}
+		#map {height: 100%;width: 40%;}
+	</style>
+    {% block nav %}
+    <a href="{% url 'profile' %}">Profile</a>
+    <a href="{% url 'properties' %}">Properties</a>
+    <a href="{% url 'faq' %}">FAQ</a>
+    {% endblock %}
 
-{% endblock content %}
+</head>
+<body>
+	<div id="map" style="width: 450px; height: 450px; float: right;margin-right:150px;margin-top:150px"></div>
+	<script>
+	var map = new L.Map('map', {
+		center: [37.770, -122.41],
+		zoom: 13
+	});
+	
+	L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+		attribution: '© OpenStreetMap contributors'
+	}).addTo(map);
+	
+	L.tileLayer('http://census.sparkgeo.com/{z}/{x}/{y}.png').addTo(map);
+
+	</script>
+</body>

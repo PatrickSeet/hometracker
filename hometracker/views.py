@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect, render_to_response
 from django.template import RequestContext
 from websites import settings
 from django.conf import settings
+from django import forms
 from hometracker.forms import EmailUserCreationForm, PropertyForm, PropertyNotesForm
 from hometracker.models import Property
 from hometracker.models import PropertyNotes
@@ -55,17 +56,26 @@ def properties(request):
 
 @login_required()
 def new_property(request):
+
     # If the user is submitting the form
     if request.method == "POST":
 
         # Get the instance of the form filled with the submitted data
         form = PropertyForm(request.POST)
-
         # Django will check the form's validity for you
         if form.is_valid():
 
-            # Saving the form will create a new Genre object
+            # Saving the form will create a new Property object
             if form.save():
+                data = form.cleaned_data
+                property_address = data['address']
+                google_maps = GoogleMaps(api_key='AIzaSyDlHBtlOb1-JpUPZ8CHAZqaNha6Uw_l_ow')
+                location_info = google_maps.query(location=property_address)
+                location_info = location_info.first()
+                #Property.objects.update(xcoordinate=location_info.lat)
+                #Property.objects.create(ycoordinate=location_info.lng)
+                Property.objects.filter(id=form.id).update(xcoordinate=location_info.lat)
+                Property.objects.filter(id=form.id).update(ycoordinate=location_info.lng)
 
                 # After saving, redirect the user to add propertynotes
                 return redirect("new_propertynotes")
