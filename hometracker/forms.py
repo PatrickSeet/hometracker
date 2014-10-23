@@ -7,6 +7,7 @@ from hometracker.models import Shopper
 from hometracker.models import Property
 from hometracker.models import PropertyNotes
 
+
 class EmailUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)
 
@@ -27,10 +28,13 @@ class EmailUserCreationForm(UserCreationForm):
             code='duplicate_username',
         )
 
+
 class PropertyForm(ModelForm):
     class Meta:
         model = Property
-        exclude = ('xcoordinate','ycoordinate',)
+        # won't show x,y cords to user to fill out
+        exclude = ('xcoordinate', 'ycoordinate',)
+
 
 class PropertyNotesForm(ModelForm):
     class Meta:

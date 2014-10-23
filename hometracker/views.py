@@ -10,7 +10,7 @@ from hometracker.forms import EmailUserCreationForm, PropertyForm, PropertyNotes
 from hometracker.models import Property
 from hometracker.models import PropertyNotes
 from geolocation.google_maps import GoogleMaps
-
+from json import encoder
 import json
 
 # Create your views here.
@@ -22,7 +22,8 @@ def register(request):
             user = form.save()
             user.email_user("Welcome!", "Thank you for signing up for our website.")
             text_content = 'Thank you for signing up for our website, {}'.format(user.username)
-            html_content = '<h2>Thanks {} {}for signing up!</h2> <div>I hope you enjoy using our site</div><div>Signed up on {}'.format(user.first_name, user.last_name,user.date_joined)
+            html_content = '<h2>Thanks {} {}for signing up!</h2> <div>I hope you enjoy using our site</div><div>Signed up on {}'.format(
+                user.first_name, user.last_name, user.date_joined)
             msg = EmailMultiAlternatives("Welcome!", text_content, settings.DEFAULT_FROM_EMAIL, [user.email])
             msg.attach_alternative(html_content, "text/html")
             msg.send()
@@ -33,30 +34,36 @@ def register(request):
     return render(request, "registration/register.html", {
         'form': form,
     })
-def index(request):
 
-    return render(request, 'index.html')
 
 def faq(request):
-
     return render(request, 'faq.html')
+
 
 @login_required
 def profile(request):
-
     return render(request, 'registration/profile.html')
+
 
 @login_required()
 def properties(request):
-
+    json.encoder.FLOAT_REPR = lambda o: format(o, '.6f')
     properties = Property.objects.all()
 
-    data = {"properties":properties}
+    cords_list = []
+
+    for i in properties:
+        cords_list.append(i.xcoordinate)
+        cords_list.append(i.ycoordinate)
+
+    cords_json = json.dumps(cords_list)
+
+    data = {"properties": properties, "cords_json": cords_json}
     return render(request, "properties/properties.html", data)
+
 
 @login_required()
 def new_property(request):
-
     # If the user is submitting the form
     if request.method == "POST":
 
@@ -72,10 +79,10 @@ def new_property(request):
                 google_maps = GoogleMaps(api_key='AIzaSyDlHBtlOb1-JpUPZ8CHAZqaNha6Uw_l_ow')
                 location_info = google_maps.query(location=property_address)
                 location_info = location_info.first()
-                #Property.objects.update(xcoordinate=location_info.lat)
-                #Property.objects.create(ycoordinate=location_info.lng)
-                Property.objects.filter(id=form.id).update(xcoordinate=location_info.lat)
-                Property.objects.filter(id=form.id).update(ycoordinate=location_info.lng)
+                property = Property.objects.get(address=property_address)
+                property.xcoordinate = location_info.lat
+                property.ycoordinate = location_info.lng
+                property.save()
 
                 # After saving, redirect the user to add propertynotes
                 return redirect("new_propertynotes")
@@ -87,22 +94,21 @@ def new_property(request):
 
     return render(request, "properties/add_property.html", data)
 
+
 @login_required()
 def view_property(request, property_id):
-
     property = Property.objects.get(id=property_id)
     notes = PropertyNotes.objects.get(property_id=property_id)
     percentage_over = round((float(property.soldprice - property.askingprice) / float(property.askingprice)) * 100)
     beat_by = property.soldprice - property.offeredpricce
-
-    google_maps = GoogleMaps(api_key='AIzaSyDlHBtlOb1-JpUPZ8CHAZqaNha6Uw_l_ow')
-    location_info = google_maps.query(location=property.address)
-    location_info = location_info.first()
+    x = property.xcoordinate
+    y = property.ycoordinate
 
     data = {"property": property, "notes": notes, "percentage_over": percentage_over, "beat_by": beat_by,
-            "location_info": location_info}
+            "x": x, "y": y}
 
     return render(request, "properties/view_property.html", data)
+
 
 @login_required()
 def edit_property(request, property_id):
@@ -126,6 +132,7 @@ def edit_property(request, property_id):
     data = {"property": property, "form": form}
     return render(request, "properties/edit_property.html", data)
 
+
 @login_required()
 def new_propertynotes(request):
     # If the user is submitting the form
@@ -139,7 +146,6 @@ def new_propertynotes(request):
 
             # Saving the form will create a new Genre object
             if form.save():
-
                 # After saving, redirect the user back to the index page
                 return redirect("/properties")
 
@@ -149,6 +155,7 @@ def new_propertynotes(request):
     data = {'form': form}
 
     return render(request, "properties/add_propertynotes.html", data)
+
 
 @login_required()
 def edit_propertynotes(request, property_id):
@@ -172,58 +179,13 @@ def edit_propertynotes(request, property_id):
     data = {"propertynotes": propertynotes, "form": form}
     return render(request, "properties/edit_propertynotes.html", data)
 
-@login_required()
-def base(request):
-
-    json_data = {}
-    properties = Property.objects.all()
-    google_maps = GoogleMaps(api_key='AIzaSyDlHBtlOb1-JpUPZ8CHAZqaNha6Uw_l_ow')
-
-    for property in properties:
-        property_info = google_maps.query(location=property.address)
-        property_info = property_info.first()
-        lat = property_info.lat
-        manual_lat = lat
-        lng = property_info.lng
-        manual_lng = lng
-        json_data[lat] = lat
-        json_data[lng] = lng
-
-    jdata = json.dumps(json_data)
-
-    #location_dict = {'json_data': json_data}
-    data = {"jdata":jdata}
-
-    return render(request, "base.html", data)
-@login_required()
-def map(request):
-
-    json_data = {}
-    properties = Property.objects.all()
-    google_maps = GoogleMaps(api_key='AIzaSyDlHBtlOb1-JpUPZ8CHAZqaNha6Uw_l_ow')
-
-    for property in properties:
-        property_info = google_maps.query(location=property.address)
-        property_info = property_info.first()
-        lat = property_info.lat
-        manual_lat = lat
-        lng = property_info.lng
-        manual_lng = lng
-        json_data[lat] = lat
-        json_data[lng] = lng
-
-    jdata = json.dumps(json_data)
-
-    #location_dict = {'json_data': json_data}
-    data = {"jdata":jdata}
-
-    return render(request, "map.html", data)
 
 @login_required()
 def delete_property(request, property_id):
     property = Property.objects.get(id=property_id)
     property.delete()
     return redirect("/properties/")
+
 
 @login_required()
 def delete_propertynotes(request, property_id):
