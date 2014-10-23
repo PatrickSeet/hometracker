@@ -55,5 +55,5 @@ target/
 
 *.pyc
 .idea/
-/static
+staticfiles
 local_settings.py
