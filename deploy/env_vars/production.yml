@@ -1,0 +1,7 @@
+---
+
+db_name: "hometracker"
+db_user: "hometracker"
+db_password: myawesomepassword
+nginx_server_name: "ec2-54-69-201-21.us-west-2.compute.amazonaws.com"
+django_settings_file: websites.settings

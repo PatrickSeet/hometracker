@@ -1,0 +1,7 @@
+---
+
+virtualenv_path: "/home/ubuntu/.virtualenvs/websites"
+git_repo: https://github.com/PatrickSeet/hometracker.git
+project_name: hometracker
+project_path: "/home/ubuntu/websites"
+requirements_file: "{{ project_path }}/requirements.txt"

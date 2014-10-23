@@ -1,0 +1,17 @@
+---
+
+#- name: SSH | Find Git repo SSH host key
+#  shell: ssh-keyscan {{ git_repo }}
+#  register: git_repo_host_key
+#  sudo_user: blog_analytics
+#
+#- name: SSH | Add Git repo host key to known_hosts file
+#  lineinfile: create=yes dest=/home/ubuntu/.ssh/known_hosts line='{{ git_repo_host_key.stdout }}' state=present
+#  sudo_user: blog_analytics
+
+- name: Ensure to pull latest version of Git Repo
+  git: repo={{ git_repo }} dest={{ project_path }} accept_hostkey=yes
+  tags: git
+
+- name: Ensure user owns our project
+  file: state=directory path={{ project_path }} owner=ubuntu
