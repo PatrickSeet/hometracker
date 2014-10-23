@@ -19,13 +19,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
 
-# STATICFILES_DIRS = (
-#     os.path.join(BASE_DIR, 'static'),
-# )
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
 
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+# STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
