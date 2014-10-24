@@ -1,11 +1,7 @@
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
 from django.core.mail import EmailMultiAlternatives
-from django.shortcuts import render, redirect, render_to_response
-from django.template import RequestContext
-from websites import settings
+from django.shortcuts import render, redirect
 from django.conf import settings
-from django import forms
 from hometracker.forms import EmailUserCreationForm, PropertyForm, PropertyNotesForm
 from hometracker.models import Property
 from hometracker.models import PropertyNotes
@@ -79,10 +75,8 @@ def new_property(request):
                 google_maps = GoogleMaps(api_key='AIzaSyDlHBtlOb1-JpUPZ8CHAZqaNha6Uw_l_ow')
                 location_info = google_maps.query(location=property_address)
                 location_info = location_info.first()
-                property = Property.objects.get(address=property_address)
-                property.xcoordinate = location_info.lat
-                property.ycoordinate = location_info.lng
-                property.save()
+                Property.objects.filter(address=property_address).update(xcoordinate=location_info.lat)
+                Property.objects.filter(address=property_address).update(ycoordinate=location_info.lng)
 
                 # After saving, redirect the user to add propertynotes
                 return redirect("new_propertynotes")
