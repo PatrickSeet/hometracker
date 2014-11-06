@@ -3,7 +3,6 @@ Jinja2==2.7.3
 MarkupSafe==0.23
 Pillow==2.5.3
 PyYAML==3.11
-ansible==1.7.2
 dj-database-url==0.3.0
 dj-static==0.0.6
 django-appconf==0.6
