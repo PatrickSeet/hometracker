@@ -1,138 +1,123 @@
+{% extends 'base_template.html' %}
 {% load staticfiles %}
 {% load leaflet_tags %}
-<!DOCTYPE html>
-<html>
-<header>
 
-</header>
-<head>
+
+{% block head %}
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     {% leaflet_js %}
     {% leaflet_css %}
- <body background="{% static 'img/graphy.png' %}">
-<div class="bs-example">
-    <nav role="navigation" class="navbar navbar-default">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
+{% endblock head %}
+
+{% block header %}
+    <link rel="stylesheet" href="{% static 'css/leaflet.css' %}"/>
+{% endblock header %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div id class="row">
+            <div class="col-lg-12" style="margin-top: 70px; text-align: center">
+                <h1>{{ property.address }}</h1>
+            </div>
         </div>
-        <!-- Collection of nav links and other content for toggling -->
-        <a href="#" class="navbar-brand" style="font-size: 25px;">Hometracker</a>
-
-        <div id="navbarCollapse" class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="{% url 'profile' %}">Profile</a></li>
-                <li><a href="{% url 'properties' %}">Properties</a></li>
-                <li><a href="{% url 'faq' %}">FAQ</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                {% if user.is_authenticated %}
-                    <li><a href="{% url 'logout' %}">Logout</a></li>
-                {% else %}
-                    <li><a href="{% url 'login' %}">Login</a></li>
-                    <li><a href="{% url 'register' %}">Register</a></li>
-                {% endif %}
-            </ul>
+        <div id class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-4" style="margin-top: 30px">
+                <div id="mymap" style="width: 450px; height: 450px">
+                    <script type="text/javascript">
+                        function map_init_basic(map) {
+                            var xcor = {{ x }};
+                            var ycor = {{ y }};
+                            map.setView([xcor, ycor], 15);
+                            L.marker([xcor, ycor]).addTo(map);
+                        }
+                    </script>
+                </div>
+            </div>
+            <div class="col-md-6"></div>
+                <img src="/static/media/{{ property.prop_image }}" width="450px" height="450px" style="margin-top: 30px">
+            <div class="col-md-1"></div>
         </div>
-    </nav>
-</div>
-<div id="mymap" style="width: 450px; height: 450px; float: right;margin-right:150px;margin-top:150px">
-
-    <script type="text/javascript">
-        function map_init_basic(map) {
-            var xcor = {{ x }};
-            var ycor = {{ y }};
-            map.setView([xcor, ycor], 15);
-            L.marker([xcor, ycor]).addTo(map);
-        }
-    </script>
-</div>
-<div class="pcontent" style="margin-left: 100px">
-    <h1>{{ property.address }}</h1>
-
-    <h3>Info</h3>
-    <table class="table" style="width: 60px;width: 300px;">
-        <tbody>
-        <tr class="active">
-            <td>Number of bedrooms:</td>
-            <td>{{ property.numofbdrms }}</td>
-        </tr>
-        <tr class="active">
-            <td>Number of bathrooms:</td>
-            <td>{{ property.numofbthrms }}</td>
-        </tr>
-        <tr class="active">
-            <td>Property type:</td>
-            <td>{{ property.propertytype }}</td>
-        </tr>
-        <tr class="warning">
-            <td>Asking price:</td>
-            <td>${{ property.askingprice }}</td>
-        <tr class="success">
-            <td>You've offered:</td>
-            <td>${{ property.offeredpricce }}</td>
-        <tr class="warning">
-            <td>Property sold:</td>
-            <td>${{ property.soldprice }}</td>
-        <tr class="danger">
-            <td>Percentage over:</td>
-            <td>{{ percentage_over }}%</td>
-        <tr class="danger">
-            <td>You were beat by:</td>
-            <td>${{ beat_by }}</td>
-        </tr>
-        </tbody>
-    </table>
-    <a href="{% url "edit_property" property.id %}">Edit Property</a>
-    <a href="{% url "delete_property" property.id %}">Delete Property</a>
-    <br>
-
-    <h3>Notes</h3>
-    <table class="table" style="width: 60px;width: 300px;">
-        <tbody>
-        <tr class="active">
-            <td>Roof:</td>
-            <td>{{ notes.roof }}</td>
-        </tr>
-        <tr class="active">
-            <td>Kitchen:</td>
-            <td>{{ notes.kitchen }}</td>
-        </tr>
-        <tr class="active">
-            <td>Bathrooms:</td>
-            <td>{{ notes.bathrooms }}</td>
-        </tr>
-        <tr class="active">
-            <td>Frontyard:</td>
-            <td>{{ notes.frontyard }}</td>
-        <tr class="active">
-            <td>Backyard:</td>
-            <td>{{ notes.backyard }}</td>
-        <tr class="active">
-            <td>Termite estimate:</td>
-            <td>{{ notes.termite }}</td>
-        <tr class="active">
-            <td>Foundation estimate:</td>
-            <td>{{ notes.foundation }}</td>
-        <tr class="active">
-            <td>Neighborhood notes:</td>
-            <td>{{ notes.neighborhood }}</td>
-        </tr>
-        </tbody>
-    </table>
-
-    <a href="{% url "edit_propertynotes" property.id %}">Edit Property Notes</a>
-    <a href="{% url "delete_propertynotes" property.id %}">Delete Property Notes</a>
-    {% leaflet_map "mymap" callback="window.map_init_basic" %}
-
-    <a href="{% url "profile" %}">Back to Profile</a>
-    <a href="{% url "properties" %}">Back to Properties</a>
-
-</div>
-</body>
-</html>
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-5">
+                <div class="pcontent">
+                    <h3>Info</h3>
+                    <table class="table" style="width: 450px">
+                        <tbody>
+                        <tr class="active">
+                            <td>Number of bedrooms:</td>
+                            <td>{{ property.numofbdrms }}</td>
+                        </tr>
+                        <tr class="active">
+                            <td>Number of bathrooms:</td>
+                            <td>{{ property.numofbthrms }}</td>
+                        </tr>
+                        <tr class="active">
+                            <td>Property type:</td>
+                            <td>{{ property.propertytype }}</td>
+                        </tr>
+                        <tr class="warning">
+                            <td>Asking price:</td>
+                            <td>${{ property.askingprice }}</td>
+                        <tr class="success">
+                            <td>You've offered:</td>
+                            <td>${{ property.offeredpricce }}</td>
+                        <tr class="warning">
+                            <td>Property sold:</td>
+                            <td>${{ property.soldprice }}</td>
+                        <tr class="danger">
+                            <td>Percentage over:</td>
+                            <td>{{ percentage_over }}%</td>
+                        <tr class="danger">
+                            <td>You were beat by:</td>
+                            <td>${{ beat_by }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <a href="{% url "edit_property" property.id %}" class="btn btn-primary">Edit Property</a>
+                    <a href="{% url "delete_property" property.id %}" class="btn btn-danger">Delete Property</a>
+                    <br>
+                </div>
+            </div>
+                <div class="col-md-5">
+                    <h3>Notes</h3>
+                    <table class="table" style="width: 450px">
+                        <tbody>
+                        <tr class="active">
+                            <td>Roof:</td>
+                            <td>{{ notes.roof }}</td>
+                        </tr>
+                        <tr class="active">
+                            <td>Kitchen:</td>
+                            <td>{{ notes.kitchen }}</td>
+                        </tr>
+                        <tr class="active">
+                            <td>Bathrooms:</td>
+                            <td>{{ notes.bathrooms }}</td>
+                        </tr>
+                        <tr class="active">
+                            <td>Frontyard:</td>
+                            <td>{{ notes.frontyard }}</td>
+                        <tr class="active">
+                            <td>Backyard:</td>
+                            <td>{{ notes.backyard }}</td>
+                        <tr class="active">
+                            <td>Termite estimate:</td>
+                            <td>{{ notes.termite }}</td>
+                        <tr class="active">
+                            <td>Foundation estimate:</td>
+                            <td>{{ notes.foundation }}</td>
+                        <tr class="active">
+                            <td>Neighborhood notes:</td>
+                            <td>{{ notes.neighborhood }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                        <a href="{% url "edit_propertynotes" property.id %}" class="btn btn-primary">Edit Property Notes</a>
+                    {% leaflet_map "mymap" callback="window.map_init_basic" %}
+                </div>
+            <div class="col-md-1"></div>
+        </div>
+    </div>
+{% endblock content %}

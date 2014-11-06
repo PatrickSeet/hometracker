@@ -36,6 +36,9 @@ def faq(request):
     return render(request, 'faq.html')
 
 
+def index(request):
+    return render(request, 'index.html')
+
 @login_required
 def profile(request):
     return render(request, 'registration/profile.html')
@@ -64,7 +67,8 @@ def new_property(request):
     if request.method == "POST":
 
         # Get the instance of the form filled with the submitted data
-        form = PropertyForm(request.POST)
+        # form = PropertyForm(request.POST)
+        form = PropertyForm(request.POST, request.FILES)
         # Django will check the form's validity for you
         if form.is_valid():
 
@@ -84,9 +88,11 @@ def new_property(request):
     # Else if the user is looking at the form page
     else:
         form = PropertyForm()
+
     data = {'form': form}
 
     return render(request, "properties/add_property.html", data)
+    # return render(request, "properties/test_add_property.html", data)
 
 
 @login_required()
@@ -176,13 +182,10 @@ def edit_propertynotes(request, property_id):
 
 @login_required()
 def delete_property(request, property_id):
+    propertynotes = PropertyNotes.objects.get(property_id=property_id)
     property = Property.objects.get(id=property_id)
-    property.delete()
-    return redirect("/properties/")
-
-
-@login_required()
-def delete_propertynotes(request, property_id):
-    propertynotes = PropertyNotes.objects.get(id=property_id)
     propertynotes.delete()
+    property.delete()
+
+
     return redirect("/properties/")

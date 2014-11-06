@@ -24,6 +24,7 @@ class Property(models.Model):
     propertytype = models.CharField(max_length=100)
     xcoordinate = models.FloatField(null=True)
     ycoordinate = models.FloatField(null=True)
+    prop_image = models.ImageField(upload_to="prop_image", blank=True)
     shopper = models.ForeignKey(Shopper, related_name='shopper')
 
     def __unicode__(self):

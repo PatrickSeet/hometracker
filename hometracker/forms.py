@@ -33,6 +33,9 @@ class PropertyForm(ModelForm):
     class Meta:
         model = Property
         # won't show x,y cords to user to fill out
+        # fields = ("mlsid", "address", "numofbdrms", "numofbthrms", "numofmaster", "sqfootage", "lotsize",
+        # "askingprice", "offeredpricce", "soldprice", "frontyard", "backyard", "propertytype",
+        # "prop_image", "shopper")
         exclude = ('xcoordinate', 'ycoordinate',)
 
 

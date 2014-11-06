@@ -1,0 +1,13 @@
+{% extends 'base_template.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    <div style="margin-left: 100px">
+        <h3>Add new property</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Add New Property">
+        </form>
+    </div>
+{% endblock content %}

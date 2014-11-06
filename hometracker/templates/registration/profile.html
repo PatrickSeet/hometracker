@@ -2,11 +2,10 @@
 {% load staticfiles %}
 
 {% block content %}
-    <div   style="margin-left: 100px;margin-top: 50px">
-    <h1>Home</h1>
+    <div   style="margin-left: 100px;margin-top: 100px">
     <h2>Hi {{ user.first_name }} {{ user.last_name }}</h2>
-    <p>Your registered email is {{ user.email }}</p>
-    <p>You last logged in: {{ user.last_login }}</p>
-    <p>Member since {{ user.date_joined }}</p>
+    <h4>Your registered email is {{ user.email }}</h4>
+    <h4>You last logged in: {{ user.last_login }}</h4>
+    <h5>Member since {{ user.date_joined }}</h5>
     </div>
 {% endblock content %}
